@@ -1,0 +1,75 @@
+<style type="text/css">
+    #omPreDialog {
+        display: none;
+        height: 100%;
+        padding: 5px 10px;
+    }
+
+    #omPreDialog label {
+        font-size: 11px;
+        margin-right: 8px;
+    }
+
+    #omPreDialog div.submitbox {
+        height: 29px;
+        margin-top: 20px;
+        overflow: hidden;
+    }
+
+    #omPreDialog-code-area {
+        border: #DFDFDF 1px solid;
+        border-radius: 3px;
+        font-family: monospace;
+        font-size: 13px;
+        height: 77.6%;
+        outline: none;
+        padding: 4px 6px;
+        resize: none;
+        white-space: pre;
+        word-wrap: normal;
+        width: 99.6%;
+    }
+
+    #omPreDialog-code-area:focus {
+        border-color: #BBB;
+    }
+
+    #omPreDialog-cancel {
+        font-size: 11px;
+        line-height: 25px;
+    }
+
+    #omPreDialog-submit {
+        float: right;
+    }
+</style>
+
+<form id="omPreDialog">
+    <textarea id="omPreDialog-code-area" cols="50" rows="20"></textarea>
+
+    <div>
+        <label>
+            <input type="checkbox" checked="checked" id="omPreDialog-wrap-checkbox" value="1"> Obalit
+        </label>
+        <label>
+            <input type="radio" checked="checked" id="omPreDialog-pre-code-wrap" name="wrapper" value="precode">
+            <code>&lt;pre&gt;&lt;code&gt;</code>
+        </label>
+        <label>
+            <input type="radio" name="wrapper" value="pre">
+            <code>&lt;pre&gt;</code>
+        </label>
+        <label>
+            <input type="radio" name="wrapper" value="code">
+            <code>&lt;code&gt;</code>
+        </label>
+        <label>
+            <input type="checkbox" checked="checked" id="omPreDialog-spaces-checkbox" value="1"> nahradit taby mezerama
+        </label>
+
+        <div class="submitbox">
+            <a class="submitdelete" id="omPreDialog-cancel" href="#">Zrušit</a>
+            <input type="submit" id="omPreDialog-submit" class="button-primary" value="Vložit kód">
+        </div>
+    </div>
+</form>
