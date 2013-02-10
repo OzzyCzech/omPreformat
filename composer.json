@@ -1,0 +1,17 @@
+{
+  "name":"om/omPreformat",
+  "type":"wordpress-plugin",
+  "description":"",
+  "keywords":["Wordpress"],
+  "homepage":"http://www.omdesign.cz",
+  "license":["BSD-3-Clause", "GPL-2.0", "GPL-3.0"],
+  "authors":[
+    {
+      "name":"Roman Ožana",
+      "homepage":"http://www.omdesign.cz"
+    }
+  ],
+  "require":{
+    "php":">=5.3.0"
+  }
+}
