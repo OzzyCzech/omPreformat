@@ -37,11 +37,13 @@ class omPreformat {
 
 	public function addPrePlugin($plugin_array) {
 		$plugin_array['omPrePlugin'] = plugins_url('js/omPrePlugin.js', __FILE__);
+		$plugin_array['omCodePlugin'] = plugins_url('js/omCodePlugin.js', __FILE__);
 		return $plugin_array;
 	}
 
 	public function addPreButton($buttons) {
 		array_push($buttons, "|", "omPrePlugin");
+		array_push($buttons, "|", "omCodePlugin");
 		return $buttons;
 	}
 

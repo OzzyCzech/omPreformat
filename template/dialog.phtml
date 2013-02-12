@@ -16,7 +16,7 @@
         overflow: hidden;
     }
 
-    #omPreDialog-code-area {
+    #omCodeTextarea {
         border: #DFDFDF 1px solid;
         border-radius: 3px;
         font-family: monospace;
@@ -30,46 +30,47 @@
         width: 99.6%;
     }
 
-    #omPreDialog-code-area:focus {
-        border-color: #BBB;
+    #omCodeTextarea:focus {
+        border-color: #bbb;
     }
 
-    #omPreDialog-cancel {
+    #omCancelDialog {
         font-size: 11px;
         line-height: 25px;
     }
 
-    #omPreDialog-submit {
+    .ui-widget-content .ui-state-hover {
+        border: 0;
+    }
+
+    #omSubmitDialog {
         float: right;
     }
 </style>
 
 <form id="omPreDialog">
-    <textarea id="omPreDialog-code-area" cols="50" rows="20"></textarea>
+    <textarea id="omCodeTextarea" cols="50" rows="20"></textarea>
 
     <div>
         <label>
-            <input type="checkbox" checked="checked" id="omPreDialog-wrap-checkbox" value="1"> Obalit
-        </label>
-        <label>
-            <input type="radio" checked="checked" id="omPreDialog-pre-code-wrap" name="wrapper" value="precode">
+            <input type="radio" checked="checked" id="omPreCodeWrapperRadio" name="wrapper" value="precode">
             <code>&lt;pre&gt;&lt;code&gt;</code>
         </label>
         <label>
-            <input type="radio" name="wrapper" value="pre">
+            <input type="radio" id="omPreWrapperRadio" name="wrapper" value="pre">
             <code>&lt;pre&gt;</code>
         </label>
         <label>
-            <input type="radio" name="wrapper" value="code">
+            <input type="radio" id="omCodeWrapperRadio" name="wrapper" value="code">
             <code>&lt;code&gt;</code>
         </label>
         <label>
-            <input type="checkbox" checked="checked" id="omPreDialog-spaces-checkbox" value="1"> nahradit taby mezerama
+            <input type="checkbox" checked="checked" id="omSpacesCheckbox" value="1"> nahradit taby mezerama
         </label>
 
         <div class="submitbox">
-            <a class="submitdelete" id="omPreDialog-cancel" href="#">Zrušit</a>
-            <input type="submit" id="omPreDialog-submit" class="button-primary" value="Vložit kód">
+            <a class="submitdelete" id="omCancelDialog" href="#">Zrušit</a>
+            <input type="submit" id="omSubmitDialog" class="button-primary" value="Vložit kód">
         </div>
     </div>
 </form>
