@@ -5,7 +5,8 @@
 
 var omPreDialog = (function ($) {
 
-	var _dialog = { isOpen: false }, _editor = {}, _decDictionary = {}, _encRegex, _node;
+	var _window = _editor = _decDictionary = _options = {};
+	var _editor, _encRegex, _node;
 
 	var _tags = {
 		precode: { open: '<pre><code>', close: '</code></pre>' },
@@ -46,27 +47,22 @@ var omPreDialog = (function ($) {
 	return {
 		init: function () {
 
-			// dialog
-			_dialog.view = $('#omPreDialog');
 
-			// main elements
-			_dialog.textarea = document.getElementById('omCodeTextarea');
-			_dialog.submit = document.getElementById('omSubmitDialog');
-
-			// space / tabs replacement
-			_dialog.spacesCheckbox = document.getElementById('omSpacesCheckbox');
-
-			// radio buttons
-			_dialog.preCodeWrapperRadio = document.getElementById('omPreCodeWrapperRadio');
-			_dialog.codeWrapperRadio = document.getElementById('omCodeWrapperRadio')
-			_dialog.preWrapperRadio = document.getElementById('omPreWrapperRadio')
-
-			// events
-			$('#omCancelDialog').bind('click', omPreDialog.close);
-			_dialog.view.bind('submit', omPreDialog.onSubmit);
-			_dialog.view.bind('keyup', omPreDialog.keyUp);
-			_dialog.view.bind('wpdialogbeforeopen', omPreDialog.beforeOpen);
-			_dialog.view.bind('wpdialogclose', omPreDialog.onClose);
+			_options = '<label>' +
+					'<input type="radio" checked="checked" id="omPreCodeWrapperRadio" name="wrapper" value="precode">' +
+					'<code>&lt;pre&gt;&lt;code&gt;</code>' +
+					'</label> ' +
+					'<label>' +
+					'<input type="radio" id="omPreWrapperRadio" name="wrapper" value="pre">' +
+					'<code>&lt;pre&gt;</code>' +
+					'</label> ' +
+					'<label>' +
+					'<input type="radio" id="omCodeWrapperRadio" name="wrapper" value="code">' +
+					'<code>&lt;code&gt;</code>' +
+					'</label> ' +
+					'<label>' +
+					'<input type="checkbox" checked="checked" id="omSpacesCheckbox" value="1"> nahradit taby mezerama' +
+					'</label>';
 
 			// Dinamically init the decoding dictionary and the encoding regex
 			var char_list = '';
@@ -77,78 +73,73 @@ var omPreDialog = (function ($) {
 			_encRegex = new RegExp('[' + char_list + ']', 'g');
 		},
 
-		open: function (editor) {
+		open: function (editor, url) {
 			_editor = editor;
 			_node = _editor.selection.getNode();
+			_window = _editor.windowManager.open({
+						id: 'omPreDialog_wrapper',
 
-			if (!_dialog.view.data('wpdialog')) {
-				_dialog.view.wpdialog({
-					title: '',
-					width: 600,
-					height: 'auto',
-					modal: true,
-					dialogClass: 'wp-dialog',
-					zIndex: 300000
-				});
-			}
+						title: 'Vložit preformátovaný kód',
+						pading: 10,
+						padding: 10,
+						dialogClass: 'wp-dialog',
+						zIndex: 300000,
 
-			_dialog.view.wpdialog('open');
+						body: [
+							{
+								type: 'textbox',
+								id: 'omCodeTextarea',
+								name: 'omCodeTextarea',
+								label: '',
+								value: '',
+								multiline: true,
+								autofocus: true,
+								minWidth: 800,
+								minHeight: 400
+							},
+							{
+								type: 'container',
+								html: _options
+							}
+						],
+						onsubmit: function (e) {
+							console.log(e.data);
+							if (e.data.omCodeTextarea) {
+								omPreDialog.updateContent(e.data.omCodeTextarea);
+							} else {
+								e.preventDefault();
+							}
+						}
+					}
+			);
 		},
 
 		beforeOpen: function () {
-			_dialog.isOpen = true;
-			_dialog.preCodeWrapperRadio.checked = true; // default value
-			_dialog.submit.value = 'Vložit kód';
-			_dialog.textarea.focus();
 
 			// update checkboxes
-			if (_node.nodeName == 'PRE') _dialog.preWrapperRadio.checked = true;
-			if (_node.nodeName == 'CODE') _dialog.codeWrapperRadio.checked = true;
-			if (_node.nodeName == 'CODE' && _node.parentNode.nodeName == 'PRE') _dialog.preCodeWrapperRadio.checked = true;
+			if (_node.nodeName == 'PRE') _window.preWrapperRadio.checked = true;
+			if (_node.nodeName == 'CODE') _window.codeWrapperRadio.checked = true;
+			if (_node.nodeName == 'CODE' && _node.parentNode.nodeName == 'PRE') _window.preCodeWrapperRadio.checked = true;
 
 			// getting node value
 			if (_node.nodeName == 'PRE' || _node.nodeName == 'CODE') {
-				_dialog.textarea.value = _editor.selection.getNode().innerText;
-				_dialog.submit.value = 'Aktualizovat';
+				_window.textarea.value = _editor.selection.getNode().innerText;
 			}
 
 			if (_editor.selection.getContent()) {
-				_dialog.textarea.value = _editor.selection.getContent();
-				_dialog.codeWrapperRadio.checked = true; // prefer <code>
-				_dialog.submit.value = 'Aktualizovat';
+				_window.textarea.value = _editor.selection.getContent();
+				_window.codeWrapperRadio.checked = true; // prefer <code>
 			}
 
-		},
-
-		close: function () {
-			_dialog.view.wpdialog('close');
-			return false;
-		},
-
-		onClose: function () {
-			_dialog.isOpen = false;
-			_dialog.textarea.value = '';
-			_editor.focus();
-		},
-
-
-		onSubmit: function () {
-			if (_dialog.textarea.value) {
-				omPreDialog.updateContent();
-				return omPreDialog.close();
-			}
-
-			_dialog.textarea.focus();
-			return false;
 		},
 
 		getCodeWrapper: function () {
-			return $('input[name=wrapper]:checked', $(_dialog.view)).val();
+			return $('input[name=wrapper]:checked', $(_window.view)).val();
 		},
 
-		updateContent: function () {
+		updateContent: function (code) {
 			var code = _wrap(
-					_code(_dialog.textarea.value, _dialog.spacesCheckbox.checked),
+					_code(_window.textarea.value, _window.spacesCheckbox.checked),
 					omPreDialog.getCodeWrapper()
 			);
 

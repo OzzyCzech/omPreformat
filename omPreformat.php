@@ -24,7 +24,6 @@ class omPreformat {
 
 		add_filter('mce_external_plugins', array(&$this, 'addPrePlugin'));
 		add_filter('mce_buttons', array(&$this, 'addPreButton'));
-		add_action('admin_footer', array(&$this, 'addDialog'));
 		add_action('admin_print_footer_scripts', array(&$this, 'initScript'));
 		add_action('admin_enqueue_scripts', array(&$this, 'enqueueScript'));
 
@@ -46,11 +45,6 @@ class omPreformat {
 		array_push($buttons, "|", "omCodePlugin");
 		return $buttons;
 	}
-
-	public function addDialog() {
-		include __DIR__ . '/template/dialog.phtml';
-	}
-
 	public function initScript() {
 		echo '<script>jQuery(document).ready(omPreDialog.init());</script>';
 	}

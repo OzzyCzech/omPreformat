@@ -4,29 +4,37 @@
  */
 var omPrePlugin = (function () {
 
-	tinymce.create('tinymce.plugins.omPrePlugin', {
+	tinymce.create(
+			'tinymce.plugins.omPrePlugin',
+			{
+				init: function (editor, url) {
 
-		init: function (editor, url) {
-			editor.addButton('omPrePlugin', {
-				title: 'omPrePlugin.code',
-				image: url + '/pre.png',
-				onclick: function () {
-					omPreDialog.open(editor);
+					editor.addButton('omPrePlugin', {
+						title: 'Insert code',
+						image: url + '/pre.png',
+						cmd: 'omPre_insert_code'
+					});
+
+					editor.addCommand('omPre_insert_code', function () {
+								omPreDialog.open(editor, url);
+							}
+					);
+
+				},
+
+				getInfo: function () {
+					return {
+						longname: "Preformat code insert",
+						author: "Roman Ožana",
+						authorurl: "http://www.omdesign.cz/",
+						infourl: "http://www.omdesign.cz/",
+						version: "1.0"
+					};
 				}
-			});
-		},
 
-		getInfo: function () {
-			return {
-				longname: "Preformat code insert",
-				author: "Roman Ožana",
-				authorurl: "http://www.omdesign.cz/",
-				infourl: "http://www.omdesign.cz/",
-				version: "1.0"
-			};
-		}
-	});
+			});
 
 	tinymce.PluginManager.add('omPrePlugin', tinymce.plugins.omPrePlugin);
 
 })();
+
