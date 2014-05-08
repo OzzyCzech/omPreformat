@@ -5,7 +5,7 @@
 
 var omPreDialog = (function ($) {
 
-	var _window = _editor = _decDictionary = _options = {};
+	var _modal = _decDictionary = _options = {};
 	var _editor, _encRegex, _node;
 
 	var _tags = {
@@ -23,7 +23,7 @@ var omPreDialog = (function ($) {
 	 * @return {*}
 	 * @private
 	 */
-	var _wrap = function _wrap(code, wrapper) {
+	var _wrapCode = function _wrapCode(code, wrapper) {
 		return _tags[wrapper].open + code + _tags[wrapper].close;
 	}
 
@@ -33,7 +33,7 @@ var omPreDialog = (function ($) {
 	 * @return {*|void}
 	 * @private
 	 */
-	var _code = function _code(content, spaces) {
+	var _processCode = function _processCode(content, spaces) {
 		content = content.replace(_encRegex, function (char) {
 			return '&' + _encoding[char] + ';';
 		});
@@ -45,24 +45,42 @@ var omPreDialog = (function ($) {
 	}
 
 	return {
+		getModalBody: function () {
+			var style = 'float:left;margin-right:8px;';
+
+			return [
+				{
+					type: 'textbox',
+					name: 'omCode',
+					label: '',
+					value: this.getContent(),
+					multiline: true,
+					autofocus: true,
+					minWidth: 820,
+					minHeight: 420
+				},
+				{
+					type: 'container',
+					style: "height:32px",
+					items: [
+						{
+							type: 'listbox',
+							name: 'omCodeWrapper',
+							style: style,
+							value: this.getCodeWrapper(),
+							values: [
+								{text: '<pre><code>', value: 'precode'},
+								{text: '<pre>', value: 'pre'},
+								{text: '<code>', value: 'code'}
+							]
+						},
+						{name: 'omSpaces', type: 'checkbox', checked: true, text: 'nahradit taby mezerama', style: style + 'margin-top: 6px'}
+					]
+				}
+			]
+		},
+
 		init: function () {
-
-
-			_options = '<label>' +
-					'<input type="radio" checked="checked" id="omPreCodeWrapperRadio" name="wrapper" value="precode">' +
-					'<code>&lt;pre&gt;&lt;code&gt;</code>' +
-					'</label> ' +
-					'<label>' +
-					'<input type="radio" id="omPreWrapperRadio" name="wrapper" value="pre">' +
-					'<code>&lt;pre&gt;</code>' +
-					'</label> ' +
-					'<label>' +
-					'<input type="radio" id="omCodeWrapperRadio" name="wrapper" value="code">' +
-					'<code>&lt;code&gt;</code>' +
-					'</label> ' +
-					'<label>' +
-					'<input type="checkbox" checked="checked" id="omSpacesCheckbox" value="1"> nahradit taby mezerama' +
-					'</label>';
 
 			// Dinamically init the decoding dictionary and the encoding regex
 			var char_list = '';
@@ -75,37 +93,24 @@ var omPreDialog = (function ($) {
 
 		open: function (editor, url) {
 			_editor = editor;
-			_node = _editor.selection.getNode();
-			_window = _editor.windowManager.open({
+			_node = editor.selection.getNode(); // current node
+
+			_modal = editor.windowManager.open({
 						id: 'omPreDialog_wrapper',
-
 						title: 'Vložit preformátovaný kód',
-						pading: 10,
-						padding: 10,
+						pading: 0,
 						dialogClass: 'wp-dialog',
-						zIndex: 300000,
-
-						body: [
-							{
-								type: 'textbox',
-								id: 'omCodeTextarea',
-								name: 'omCodeTextarea',
-								label: '',
-								value: '',
-								multiline: true,
-								autofocus: true,
-								minWidth: 800,
-								minHeight: 400
-							},
-							{
-								type: 'container',
-								html: _options
-							}
-						],
+						zIndex: 99999,
+						body: this.getModalBody(),
 						onsubmit: function (e) {
-							console.log(e.data);
-							if (e.data.omCodeTextarea) {
-								omPreDialog.updateContent(e.data.omCodeTextarea);
+
+							if (e.data.omCode) {
+								console.log(e.data);
+								omPreDialog.updateContent(
+										e.data.omCode,
+										e.data.omCodeWrapper,
+										e.data.omSpaces
+								)
 							} else {
 								e.preventDefault();
 							}
@@ -114,36 +119,24 @@ var omPreDialog = (function ($) {
 			);
 		},
 
-		beforeOpen: function () {
-
-			// update checkboxes
-			if (_node.nodeName == 'PRE') _window.preWrapperRadio.checked = true;
-			if (_node.nodeName == 'CODE') _window.codeWrapperRadio.checked = true;
-			if (_node.nodeName == 'CODE' && _node.parentNode.nodeName == 'PRE') _window.preCodeWrapperRadio.checked = true;
-
-			// getting node value
-			if (_node.nodeName == 'PRE' || _node.nodeName == 'CODE') {
-				_window.textarea.value = _editor.selection.getNode().innerText;
-			}
-
-			if (_editor.selection.getContent()) {
-				_window.textarea.value = _editor.selection.getContent();
-				_window.codeWrapperRadio.checked = true; // prefer <code>
-			}
-
-		},
-
 		getCodeWrapper: function () {
-			return $('input[name=wrapper]:checked', $(_window.view)).val();
+			if (_editor.selection.getContent() || _node.nodeName == 'CODE') return 'code';
+			if (_node.nodeName == 'PRE') return 'pre';
+			if (_node.nodeName == 'CODE' && _node.parentNode.nodeName == 'PRE') return 'precode';
 		},
 
-		updateContent: function (code) {
-			var code = _wrap(
-					_code(_window.textarea.value, _window.spacesCheckbox.checked),
-					omPreDialog.getCodeWrapper()
-			);
+		getContent: function () {
+			if (_node.nodeName == 'PRE' || _node.nodeName == 'CODE') {
+				return _editor.selection.getNode().innerText;
+			}
+			if (_editor.selection.getContent()) return _editor.selection.getContent();
+		},
 
-			// have some tags
+		updateContent: function (code, wrapper, spaces) {
+			var code = _wrapCode(_processCode(code, spaces), wrapper); // handle code
+
+			console.log(code);
+			// have some tags? select them
 			if (_node.nodeName == 'PRE' || _node.nodeName == 'CODE') {
 				if (_node.nodeName == 'CODE' && _node.parentNode.nodeName == 'PRE') {
 					_editor.selection.select(_node.parentNode);
@@ -153,7 +146,7 @@ var omPreDialog = (function ($) {
 			}
 
 			// split paragraph to two new when
-			if (_node.nodeName == 'CODE' && _node.parentNode.nodeName == 'P' && omPreDialog.getCodeWrapper() != 'code') _node.remove();
+			if (_node.nodeName == 'CODE' && _node.parentNode.nodeName == 'P' && wrapper != 'code') _snode.remove();
 
 			if (_editor.selection.getContent()) {
 				return _editor.selection.setContent(code);
@@ -161,19 +154,6 @@ var omPreDialog = (function ($) {
 
 			// just insert new one
 			return _editor.execCommand('mceInsertContent', false, code);
-		},
-
-		keyUp: function (event) {
-			// close dialog by ESC button
-			if (event.which == $.ui.keyCode.ESCAPE) {
-				event.stopImmediatePropagation();
-				omPreDialog.close();
-				return false;
-			}
-			return true;
 		}
-
-	}
-			;
-})
-		(jQuery);
+	};
+})(jQuery);

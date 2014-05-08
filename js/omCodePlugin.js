@@ -8,10 +8,6 @@ var omCodePlugin = (function () {
 
 		init: function (editor, url) {
 
-			editor.addCommand('omInlineCode', function () {
-				editor.formatter.toggle('inlinecode');
-			});
-
 			editor.addButton('omCodePlugin', {
 						title: '<code> (Alt-Shift-C)',
 						cmd: 'omInlineCode',
@@ -19,12 +15,15 @@ var omCodePlugin = (function () {
 					}
 			);
 
-			editor.addShortcut('alt+shift+c', 'Inline <code>', 'omInlineCode');
-
-			editor.onInit.add(function () {
-				editor.formatter.register('inlinecode', {inline: 'code', remove: 'all'});
+			editor.addCommand('omInlineCode', function () {
+				editor.formatter.toggle('inlinecode');
 			});
 
+			editor.addShortcut('alt+shift+c', 'Inline <code>', 'omInlineCode');
+
+			editor.on('init', function () {
+				editor.formatter.register('inlinecode', {inline: 'code', remove: 'all'});
+			});
 		},
 
 		getInfo: function () {

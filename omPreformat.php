@@ -3,9 +3,9 @@
  * Plugin Name: omPreformat
  * Plugin URI: http://www.omdesign.cz
  * Description: Preformat publish code
- * Version: 1.0
+ * Version: 2.0
  * Author: Roman Ožana
- * Author URI: http://www.omdesign.cz/kontakt
+ * Author URI: http://www.omdesign.cz/contact
  *
  * @author Roman Ozana <ozana@omdesign.cz>
  */
@@ -26,7 +26,6 @@ class omPreformat {
 		add_filter('mce_buttons', array(&$this, 'addPreButton'));
 		add_action('admin_print_footer_scripts', array(&$this, 'initScript'));
 		add_action('admin_enqueue_scripts', array(&$this, 'enqueueScript'));
-
 	}
 
 	public function enqueueScript() {

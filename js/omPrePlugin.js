@@ -12,10 +12,10 @@ var omPrePlugin = (function () {
 					editor.addButton('omPrePlugin', {
 						title: 'Insert code',
 						image: url + '/pre.png',
-						cmd: 'omPre_insert_code'
+						cmd: 'omPreCode'
 					});
 
-					editor.addCommand('omPre_insert_code', function () {
+					editor.addCommand('omPreCode', function () {
 								omPreDialog.open(editor, url);
 							}
 					);
@@ -37,4 +37,3 @@ var omPrePlugin = (function () {
 	tinymce.PluginManager.add('omPrePlugin', tinymce.plugins.omPrePlugin);
 
 })();
-
