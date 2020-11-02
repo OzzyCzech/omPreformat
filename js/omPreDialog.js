@@ -134,8 +134,6 @@ var omPreDialog = (function ($) {
 
 		updateContent: function (code, wrapper, spaces) {
 			var code = _wrapCode(_processCode(code, spaces), wrapper); // handle code
-
-			console.log(code);
 			// have some tags? select them
 			if (_node.nodeName == 'PRE' || _node.nodeName == 'CODE') {
 				if (_node.nodeName == 'CODE' && _node.parentNode.nodeName == 'PRE') {
@@ -146,7 +144,7 @@ var omPreDialog = (function ($) {
 			}
 
 			// split paragraph to two new when
-			if (_node.nodeName == 'CODE' && _node.parentNode.nodeName == 'P' && wrapper != 'code') _snode.remove();
+			if (_node.nodeName == 'CODE' && _node.parentNode.nodeName == 'P' && wrapper != 'code') _node.remove();
 
 			if (_editor.selection.getContent()) {
 				return _editor.selection.setContent(code);
