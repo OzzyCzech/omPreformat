@@ -1,6 +1,6 @@
 /**
  * Dialog for preformat code insertation
- * @author Roman Ozana <ozana@omdesign.cz>
+ * @author Roman Ozana <roman@ozana.cz>
  */
 
 var omPreDialog = (function ($) {

@@ -1,6 +1,6 @@
 /**
  * TinyMCE plugin for <pre>, <code>, <pre><code> insertation
- * @author Roman Ozana <ozana@omdesign.cz>
+ * @author Roman Ozana <roman@ozana.cz>
  */
 var omPrePlugin = (function () {
 
@@ -26,8 +26,8 @@ var omPrePlugin = (function () {
 					return {
 						longname: "Preformat code insert",
 						author: "Roman Ožana",
-						authorurl: "http://www.omdesign.cz/",
-						infourl: "http://www.omdesign.cz/",
+						authorurl: "https://ozana.cz/",
+						infourl: "https://ozana.cz/",
 						version: "1.0"
 					};
 				}

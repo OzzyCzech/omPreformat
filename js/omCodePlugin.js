@@ -1,6 +1,6 @@
 /**
  * Plugin for <code></code> insertation
- * @author Roman Ozana <ozana@omdesign.cz>
+ * @author Roman Ozana <roman@ozana.cz>
  */
 var omCodePlugin = (function () {
 
@@ -30,8 +30,8 @@ var omCodePlugin = (function () {
 			return {
 				longname: "Insert inline code",
 				author: "Roman Ožana",
-				authorurl: "http://www.omdesign.cz/",
-				infourl: "http://www.omdesign.cz/",
+				authorurl: "https://ozana.cz/",
+				infourl: "https://ozana.cz/",
 				version: "1.0"
 			};
 		}

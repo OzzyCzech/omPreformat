@@ -1,13 +1,13 @@
 <?php
 /**
  * Plugin Name: omPreformat
- * Plugin URI: http://www.omdesign.cz
+ * Plugin URI: https://ozana.cz
  * Description: Preformat publish code
  * Version: 2.0
  * Author: Roman Ožana
- * Author URI: http://www.omdesign.cz/contact
+ * Author URI: https://ozana.cz/contact
  *
- * @author Roman Ozana <ozana@omdesign.cz>
+ * @author Roman Ozana <roman@ozana.cz>
  */
 class omPreformat {
 
